@@ -249,8 +249,10 @@ function button_was_pressed() {
         else {
             game.pressed_buttons[1] = buttonId;
             execute_play()
-            .then(() => {
-                next_play();
+            .then(result => {
+                if (result) {
+                    next_play();
+                }
             })
             .catch(error => {
                 console.log(error.message);
@@ -276,11 +278,11 @@ function execute_play() {
                         game.pressed_buttons[1] = null;
                     }
                     game.turn = (game.turn == 2)? 1 : 2;
-                    resolve();
+                    resolve(true);
                 }
                 else {
                     display_win(result[0]);
-                    resolve();
+                    resolve(false);
                 }
             })
             .catch((error) => {
@@ -293,7 +295,7 @@ function execute_play() {
             });
         })
         .catch((error) => {
-            console.log(error);
+            reject( Error(error.message) );
         });
     });
 }
@@ -421,16 +423,13 @@ function transform_board_string(boardString) {
 }
 
 function display_win(winner) {
-    alert('good');
     //convert to int
     winner = parseInt(winner);
     //game now not in progress
     game.game_in_progress = false;
-    alert("it's the board");
     //display last move to user
     api.get_board().
     then((board) => {
-        alert('good good');
         display_pieces(board);
         let message = '';
 
@@ -453,7 +452,7 @@ function display_win(winner) {
                 message = "It's a draw. Who ever wins a match of indian leg wrestling wins this game.";
             }
         }
-        alert(message);
+
         //display a pop up showing who won
         return api.show_winner(message);
     })
@@ -461,7 +460,6 @@ function display_win(winner) {
          console.log(error);
      })
      .then(result => {
-         alert('not here');
          //if user selects to start a new game
         if (result.response == 1) {
             api.clear_history()
