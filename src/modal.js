@@ -5,7 +5,7 @@
 window.addEventListener('load', event => {
     //close the modal
     document.getElementById('close-settings').addEventListener('click', event => {
-        api.close_window('');
+        start_default();
     });
 
     //game mode selectoin buttons
@@ -63,6 +63,15 @@ function piece_select() {
     for (i = 0; i < piece_btns.length; i++) {
         piece_btns[i].classList.toggle('option-selected');
     }
+}
+
+function start_default() {
+    let mode = 'hc';
+    let color = 'black';
+    let difficulty = 1;
+
+    let args = [mode, color, difficulty];
+    api.start_game(args);
 }
 
 function start_game() {
