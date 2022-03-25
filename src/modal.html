@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkers</title>
+    <link rel="stylesheet" href="../node_modules/bulma/css/bulma.min.css" />
+    <link rel="stylesheet" href="index.css" />
+
+    <script defer src="render.js"></script>
+    <script defer src="modal.js"></script>
+  </head>
+  <body>
+    <div class="columns settings-modal">
+      <div class="column">
+        <h2 class="settings-title">Start New Game</h2>
+        <p>Game Mode:</p>
+        <div id="game-mode" data-mode="hc" class="buttons are-small settings-game-mode">
+          <button class="button is-dark option-selected">Human vs. Computer</button>
+          <button class="button is-dark"><span class="game-mode-spacer"></span>Human vs. Human<span class="game-mode-spacer"></span></button>
+        </div>
+        <p>Piece Color:</p>
+        <div id="piece-color" data-color="black" class="level settings-pieces-wrapper">
+          <div class="level-item has-text-centered">
+            <button class="button option-selected">
+              <img class="settings-pieces" src="./img/checkers-black.png" />
+            </button>
+          </div>
+          <div class="level-item has-text-centered">
+            <button class="button">
+              <img class="settings-pieces" src="./img/checkers-white.png" />
+            </button>
+          </div>
+        </div>
+        <p class="settings-note">Dark colored pieces always start the game.</p>
+        <p>Difficulty:</p>
+        <div class="settings-slider">
+          <input type="range" min="1" max="5" step="1" value="1" class="slider" id="difficulty-range">
+        </div>
+        <p class="settings-note bottom-note">The harder the difficulty, the longer the computer takes to make a move.</p>
+        <div class="buttons are-small settings-actions">
+          <button id="close-settings" class="button settings-buttons">Cancel</button>
+          <button id="start-game" class="button is-info settings-buttons">Start</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
