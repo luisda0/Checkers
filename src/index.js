@@ -147,14 +147,14 @@ const createWindow = () => {
           label: 'Learn More',
           click: async () => {
             const { shell } = require('electron')
-            await shell.openExternal('https://electronjs.org')
+            await shell.openExternal('https://github.com/luisda0/Checkers')
           }
         },
         {
           label: 'Report a Problem',
           click: async () => {
             const { shell } = require('electron')
-            await shell.openExternal('https://electronjs.org')
+            await shell.openExternal('https://github.com/luisda0/Checkers/issues')
           }
         }
       ]
