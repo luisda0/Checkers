@@ -65,7 +65,12 @@ const createWindow = () => {
             show_settings()
           }
         },
-        {label: 'Restart...'},
+        {
+          label: 'Restart...',
+          click: () => {
+            mainWindow.webContents.send('confirm_restart');
+          }
+        },
         isMac ? { role: 'close' } : { role: 'quit' }
       ]
     },
@@ -337,6 +342,20 @@ ipcMain.handle("show_winner", (event, arg) => {
     type: 'none',
     buttons: ['Play Again', 'New Game'],
     title: 'Game Over',
+  };
+
+  return dialog.showMessageBox(mainWindow, options);
+});
+
+ipcMain.handle("show_restart", (event, arg) => {
+  let options = {
+    message: "Are you sure you want to restart this game?",
+    type: "question",
+    buttons: ['Cancel', 'OK'],
+    defaultId: 0,
+    detail: "Your current game will be discarded.",
+    cancelId: 0,
+    title: 'Restart Game',
   };
 
   return dialog.showMessageBox(mainWindow, options);

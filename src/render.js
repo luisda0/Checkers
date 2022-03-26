@@ -138,6 +138,32 @@ const game = {
                 );
             });
         });
+    } ,
+    restartGame: () => {
+        api.clear_history()
+        .then((result) => {
+            if (game.players[0] == 'black') {
+                game.turn = 1;
+            }
+            else {
+                game.turn = 2;
+            }
+            return api.set_turn(game.turn);
+        })
+        .then(result => {
+            game.pressed_buttons[0] = null;
+            game.pressed_buttons[1] = null;
+            return api.initialize_game();
+        })
+        .then(result => {
+            display_pieces(result);
+            game.game_in_progress = true;
+
+            //if computer starts moving
+            if (game.mode == 'hc' && game.players[0] == 'black') {
+                computer_think();
+            }
+        });
     }
 }
 
@@ -150,15 +176,7 @@ document.addEventListener("keydown", event => {
             break;
          }
 });
-/*
-window.addEventListener("resize", event => {
-    let board = document.getElementsByClassName('board')[0];
-    let height = window.innerHeight;
-    let width = window.innerWidth;
-    let boardHeight = board.offsetHeight;
-    let boardWidht = board.offsetWidth;
-});
-*/
+
 window.addEventListener("load", event => {
     activate_buttons();
 });
@@ -469,30 +487,7 @@ function display_win(winner) {
         }
         else {
             //if user selcts to restart this game
-            api.clear_history()
-            .then((result) => {
-                if (game.players[0] == 'black') {
-                    game.turn = 1;
-                }
-                else {
-                    game.turn = 2;
-                }
-                return api.set_turn(game.turn);
-            })
-            .then(result => {
-                game.pressed_buttons[0] = null;
-                game.pressed_buttons[1] = null;
-                return api.initialize_game();
-            })
-            .then(result => {
-                display_pieces(result);
-                game.game_in_progress = true;
-
-                //if computer starts moving
-                if (game.mode == 'hc' && game.players[0] == 'black') {
-                    computer_think();
-                }
-            });
+            game.restartGame();
         }
      });
 }
@@ -544,6 +539,19 @@ function deactivate_buttons() {
         buttons[i].removeEventListener("click", button_was_pressed);
     }
 }
+
+//confirm restart of the game
+api.receive("confirm_restart", () => {
+    if (game.game_in_progress) {
+        api.show_restart()
+        .then(result => {
+            //user pressed OK button
+            if (result.response == 1) {
+                game.restartGame();
+            }
+        });
+    }
+});
 
 //open settings modal
 function settings() {

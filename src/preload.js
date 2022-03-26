@@ -16,8 +16,9 @@ contextBridge.exposeInMainWorld('api', {
     piece_img: (arg) => ipcRenderer.invoke('piece_img', arg),
     start_game: (args) => ipcRenderer.invoke('start_game', args),
     show_winner: (arg) => ipcRenderer.invoke('show_winner', arg),
+    show_restart: () => ipcRenderer.invoke('show_restart'),
     receive: (channel, func) => {
-        let validChannels = ["go_forward","go_back", "new_game"];
+        let validChannels = ["go_forward","go_back", "new_game", "confirm_restart"];
         if (validChannels.includes(channel)) {
             ipcRenderer.on(channel, (event, args) => func(args));
         }

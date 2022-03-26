@@ -94,7 +94,7 @@ void clearHistory() {
   }
 }
 
-//This function makes shure that valid coordinates are passed through
+//This function makes sure that valid coordinates are passed through
 // returns the number in the board on coordinate x,y
 int getBoardNumber(int x, int y, int *board) {
   if (x < 1 || x > 8 || y < 1 || y > 8) {
