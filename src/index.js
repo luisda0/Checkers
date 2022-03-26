@@ -62,7 +62,7 @@ const createWindow = () => {
           label: 'New Game',
           accelerator: 'CmdOrCtrl+N',
           click: () => {
-            show_settings()
+            mainWindow.webContents.send('check_open_settings');
           }
         },
         {
@@ -356,6 +356,20 @@ ipcMain.handle("show_restart", (event, arg) => {
     detail: "Your current game will be discarded.",
     cancelId: 0,
     title: 'Restart Game',
+  };
+
+  return dialog.showMessageBox(mainWindow, options);
+});
+
+ipcMain.handle("confirm_new_game", () => {
+  let options = {
+    message: "Are you sure you want to start a new game?",
+    type: "question",
+    buttons: ['Cancel', 'OK'],
+    defaultId: 0,
+    detail: "Your current game will be discarded.",
+    cancelId: 0,
+    title: 'New Game',
   };
 
   return dialog.showMessageBox(mainWindow, options);

@@ -553,9 +553,24 @@ api.receive("confirm_restart", () => {
     }
 });
 
+api.receive("check_open_settings", () => {
+    settings();
+});
+
 //open settings modal
 function settings() {
-    api.show_settings()
+    if (game.game_in_progress == true) {
+        api.confirm_new_game()
+        .then(result => {
+            if (result.response == 1) {
+                game.game_in_progress = false;
+                api.show_settings();
+            }
+        });
+    }
+    else {
+        api.show_settings();
+    }
 }
 
 api.receive("new_game", (args) => {
@@ -566,5 +581,7 @@ api.receive("new_game", (args) => {
             computer_think();
         }
     })
-
+    .catch(error => {
+        console.log(erorr.message);
+    });
 });
