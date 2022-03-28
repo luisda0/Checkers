@@ -181,33 +181,50 @@ window.addEventListener("load", event => {
     activate_buttons();
 });
   
-api.receive("go_back", (result) => {
+api.receive("go_back", async (result) => {
     try {
-        if (result[0] != '[') {
-            throw result;
+        let result = await api.step_back();
+        await handle_step(result);
+        if (game.mode == 'hc') {
+            await api.step_back();
+            result = await api.get_board();
+            await handle_step(result);
         }
-        display_pieces(result);
-        game.turn = (game.turn == 2)? 1 : 2;
     }
-    catch(error) {
-        console.log(error);
+    catch (error) {
+        console.log(error.message)
     }
 });
 
-api.receive("go_forward", (result) => {
+api.receive("go_forward", async (result) => {
     try {
-        if (result[0] != '[') {
-            throw result;
+        let result = await api.step_forward();
+        await handle_step(result);
+        if (game.mode == 'hc') {
+            await api.step_forward();
+            result = await api.get_board();
+            await handle_step(result);
         }
-        display_pieces(result);
-        game.turn = (game.turn == 2)? 1 : 2;
     }
-    catch(error) {
-        console.log(error);
+    catch (error) {
+        console.log(error.message);
     }
 });
 
-
+function handle_step(result) {
+    return new Promise((resolve, reject) => {
+        if (result[0] != '[') {
+            reject( Error(result) );
+        }
+        else {
+            display_pieces(result)
+            .then(() => {
+                game.turn = (game.turn == 2)? 1 : 2;
+                resolve();
+            });
+        }
+    });
+}
 
 
 //gets the input from the user
@@ -407,28 +424,32 @@ function display_wrong_choice() {
 //input: string with the pieces present on the board
 //out: changes are displayed to the user
 function display_pieces(boardString) {
-    let boardPieces = transform_board_string(boardString);
+    return new Promise((resolve, reject) => {
 
-    for (i = 0; i < boardPieces.length; i++) {
-        let square = boardPieces[i];
-        let target = document.querySelectorAll(`button[data-id="${i}"]`)[0];
+        let boardPieces = transform_board_string(boardString);
 
-        if (square == 1) {
-            target.innerHTML = game.pieces.man_team1;
+        for (i = 0; i < boardPieces.length; i++) {
+            let square = boardPieces[i];
+            let target = document.querySelectorAll(`button[data-id="${i}"]`)[0];
+
+            if (square == 1) {
+                target.innerHTML = game.pieces.man_team1;
+            }
+            else if (square == 2) {
+                target.innerHTML = game.pieces.man_team2;
+            } 
+            else if (square == 3) {
+                target.innerHTML = game.pieces.king_team1;
+            }
+            else if (square == 4) {
+                target.innerHTML = game.pieces.king_team2;
+            }
+            else {
+                target.innerHTML = '';
+            }
         }
-        else if (square == 2) {
-            target.innerHTML = game.pieces.man_team2;
-        } 
-        else if (square == 3) {
-            target.innerHTML = game.pieces.king_team1;
-        }
-        else if (square == 4) {
-            target.innerHTML = game.pieces.king_team2;
-        }
-        else {
-            target.innerHTML = '';
-        }
-    }    
+        resolve();
+    });    
 }
 
 //transform a string into a an int array

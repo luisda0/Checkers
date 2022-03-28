@@ -82,24 +82,12 @@ const createWindow = () => {
         { 
           label: 'Undo Move',
           accelerator: 'CmdOrCtrl+Z',
-          click: () => { 
-            try {
-              mainWindow.webContents.send('go_back', checkers.go_back());
-            } catch (error) {
-              mainWindow.webContents.send('go_back', error.message);
-            }
-          }
+          click: () => { undo(); }
         },
         { 
           label: 'Redo Move',
           accelerator: 'Shift+CmdOrCtrl+Z',
-          click: () => { 
-            try {
-              mainWindow.webContents.send('go_forward', checkers.go_forward());
-            } catch (error) {
-              mainWindow.webContents.send('go_forward', error.message);
-            }
-          }
+          click: () => { redo(); }
         },
         { type: 'separator' },
         { role: 'cut' },
@@ -285,6 +273,14 @@ function show_rules() {
   }
 }
 
+function undo() {
+  mainWindow.webContents.send('go_back');
+}
+
+function redo() {
+  mainWindow.webContents.send('go_forward');
+}
+
 //This section handles all the requests made form renderer
 
 //to exit full screen mode by pressing "esc" key
@@ -305,6 +301,24 @@ ipcMain.handle("initialize_game", () => {
 ipcMain.handle("start_game", (event, args) => {
   BrowserWindow.getFocusedWindow().close();
   mainWindow.webContents.send('new_game', args);
+});
+
+ipcMain.handle("step_back", () => {
+  try {
+    return checkers.go_back();
+  } 
+  catch (error) {
+    return error.message;  
+  }
+});
+
+ipcMain.handle("step_forward", () => {
+ try {
+  return checkers.go_forward();  
+ } 
+ catch (error) {
+   return error.message;
+ }
 });
 
 ipcMain.handle("clear_history", () => {
