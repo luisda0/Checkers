@@ -58,14 +58,6 @@ int *initializeBoard() {
     2,9,2,9,2,9,2,9,
     9,2,9,2,9,2,9,2,
     2,9,2,9,2,9,2,9
-    /*9,0,9,0,9,0,9,0,
-    0,9,0,9,0,9,0,9,
-    9,0,9,0,9,0,9,0,
-    0,9,0,9,0,9,0,9,
-    9,0,9,1,9,0,9,0,
-    0,9,0,9,0,9,0,9,
-    9,0,9,0,9,2,9,0,
-    0,9,0,9,0,9,0,9*/
   };
   int *board = (int *)malloc(sizeof(int) * 64);
   for (size_t i = 0; i < 64; i++) {
@@ -126,27 +118,7 @@ bool setBoardNumber(int x, int y, int number, int *board) {
   return false;
 }
 
-//gives all the neighbors of a piece in location x,y
-//in: direction of where the neighbor is (0 = down right, 1 = down left,
-//    2 = up left, 3 = up right)
-//out: position in the specified direction of the
-//     neighbor space relateive to initial coordinate
-Neighbors getNeighbors(int x, int y, int *board) {
-  Neighbors neighbors;
-  int neighbor_pos[4][2]= {{1,1}, {-1,1}, {-1,-1}, {1,-1}};
-
-  for (size_t i = 0; i < 4; i++) {
-    neighbors.neighbor[i] = getBoardNumber(x + neighbor_pos[i][0], y + neighbor_pos[i][1], board);
-    neighbors.relative_position[i][0] = neighbor_pos[i][0];
-    neighbors.relative_position[i][1] = neighbor_pos[i][1];
-  }
-  return neighbors;
-}
-
-//jump_direction: 0 = down right, 1 = down left, 2 = up left, 3 = up right,
-//                4 = just jumped, 5 = jumped from initial, 6 = jumped from a 0
-//origin: from where the jump is being made possible values are 0 through 3, or
-//        4 if no previous origin
+//This function determines if a move is valid or not
 int *pathFinder(
   int x, //current coordinate x
   int y, //current coordinate y
@@ -370,47 +342,80 @@ int noPieces(int *board) {
 //in: a board state, the player who is moving (1 or 2)
 //returns: 1 if player 1 can't move, 2 if player 2 can't move, 0 if both
 //         players can move, 3 if both playes can't move
-int cantMovePieces(int *state, int player_moving) {
-  Neighbors neighbors;
-  int number, team, initial[2], final[2];
+int cantMovePieces(int *board, int player_moving) {
   bool player1_can_move = false;
   bool player2_can_move = false;
+  int number, next, next_next, opponent, team;
 
   //goes through all the pieces
   for (size_t y = 1; y < 9; y++) {
     for (size_t x = 1; x < 9; x++) {
-      number = getBoardNumber(x, y, state);
-      if(number == 9 || number == 0) {
+      number = getBoardNumber(x, y, board);
+
+      //skip empty or invalid places
+      if (number == 0 || number == 9) {
         continue;
       }
-      team = (number > 2)? number - 2: number;
-      //if it's already known that a player can move, skip the evaluation
-      if(team == 1 && player1_can_move == true) {
-        continue;
-      }
-      if(team == 2 && player2_can_move == true) {
-        continue;
-      }
-      initial[0] = x;
-      initial[1] = y;
-      neighbors = getNeighbors(x, y, state);
-      //go through each of the posible moves for a piece
-      for (size_t i = 0; i < 4; i++) {
-        for (size_t jump = 1; jump < 3; jump++) {
-          final[0] = x + (neighbors.relative_position[i][0] * jump);
-          final[1] = y + (neighbors.relative_position[i][1] * jump);
-          int *result = makeMove(initial , final, state, team);
-          //if the piece can move
-          if(result != NULL) {
-            if (team == 1){
+      if (
+        ((number == 1 || number == 3) && !player1_can_move) ||
+        ((number == 2 || number == 4) && !player2_can_move) 
+      ) {
+        //get who is opponent
+        team = (number > 2)? number - 2: number;
+        opponent = (team == 1)? 2: 1;
+
+        //check move forward
+        if (number != 2) {
+          next = getBoardNumber(x + 1, y + 1, board);
+          next_next = getBoardNumber(x + 2, y + 2, board);
+          //if it can move or jump
+          if (((next == opponent || next == opponent + 2) && next_next == 0) || next == 0) {
+            if (team == 1) {
               player1_can_move = true;
             }
             else {
               player2_can_move = true;
             }
-            free(result);
-            //end loops
-            i = jump = 4;
+            continue;
+          }
+          next = getBoardNumber(x - 1, y + 1, board);
+          next_next = getBoardNumber(x - 2, y + 2, board);
+          //if it can move or jump
+          if (((next == opponent || next == opponent + 2) && next_next == 0) || next == 0) {
+            if (team == 1) {
+              player1_can_move = true;
+            }
+            else {
+              player2_can_move = true;
+            }
+            continue;
+          }
+        }
+        //check move backward
+        if (number != 1) {
+          next = getBoardNumber(x - 1, y - 1, board);
+          next_next = getBoardNumber(x - 2, y - 2, board);
+          //if it can move or jump
+          if (((next == opponent || next == opponent + 2) && next_next == 0) || next == 0) {
+            if (team == 1) {
+              player1_can_move = true;
+            }
+            else {
+              player2_can_move = true;
+            }
+            continue;
+          }
+          next = getBoardNumber(x + 1, y - 1, board);
+          next_next = getBoardNumber(x + 2, y - 2, board);
+          //if it can move or jump
+          if (((next == opponent || next == opponent + 2) && next_next == 0) || next == 0) {
+            if (team == 1) {
+              player1_can_move = true;
+            }
+            else {
+              player2_can_move = true;
+            }
+            continue;
           }
         }
       }

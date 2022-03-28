@@ -7,12 +7,6 @@
 #include <unistd.h>
 
 //############ Structs ###############
-typedef struct neighbors {
-  //there is a total of four neighbors
-  int neighbor[4]; //what type of piece the neighbor is
-  int relative_position[4][2]; //saves the position relative to another piece
-} Neighbors;
-
 typedef struct mctsEval {
   int total_score;
   int num_of_visits;
