@@ -347,6 +347,7 @@ function next_play() {
 //Tells the computer to make a play
 function computer_think() {
     deactivate_buttons();
+    toggle_thinker();
 
     const minWaitTime = new Promise((resolve, reject) => {
         setTimeout(resolve, 1000);
@@ -362,10 +363,12 @@ function computer_think() {
             display_pieces(result[0]);
             game.turn = (game.turn == 2)? 1 : 2;
             activate_buttons();
+            toggle_thinker();
         }
         else {
             activate_buttons();
             display_win(result[0]);
+            toggle_thinker();
         }
     })
     .catch((error) => {
@@ -577,6 +580,10 @@ api.receive("confirm_restart", () => {
 api.receive("check_open_settings", () => {
     settings();
 });
+
+function toggle_thinker() {
+    document.getElementsByClassName('thinker')[0].classList.toggle('show-thinker');
+}
 
 //open settings modal
 function settings() {

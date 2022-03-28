@@ -230,7 +230,7 @@ int *pathFinder(
   return path;
 }
 
-//Checks if a move is valid
+//Intializes the function pathFinder
 //out: final state if move is valid, else NULL
 int *makeMove(int initial[], int final[], int *board, int team) {
   int starting_piece = getBoardNumber(initial[0], initial[1], board);
@@ -456,7 +456,7 @@ int gameOver(int *state, int player_moving) {
   return 0;
 }
 
-//Undoes previos plays
+//Undoes previous plays
 //returns true if plays where undone, false if not
 bool goBackInHistory() {
   if (history == NULL) {
