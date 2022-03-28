@@ -10,7 +10,7 @@ contextBridge.exposeInMainWorld('api', {
     computer_play: () => ipcRenderer.invoke('computer_play'),
     get_board: () => ipcRenderer.invoke('get_board'),
     show_settings: () => ipcRenderer.invoke('show_settings'),
-    close_window: (arg) => ipcRenderer.invoke('close_window', arg),
+    close_window: () => ipcRenderer.invoke('close_window'),
     set_depth: (arg) => ipcRenderer.invoke('set_depth', arg),
     set_turn: (arg) => ipcRenderer.invoke('set_turn', arg),
     piece_img: (arg) => ipcRenderer.invoke('piece_img', arg),

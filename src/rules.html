@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="wilih=device-wilih, initial-scale=1">
+    <title>Checkers</title>
+    <link rel="stylesheet" href="../node_modules/bulma/css/bulma.min.css" />
+    <link rel="stylesheet" href="index.css" />
+
+    <script defer src="render.js"></script>
+    <script defer src="rules.js"></script>
+  </head>
+  <body>
+    <div class="columns rules-modal">
+      <div class="column">
+        <div class="rules-title">
+            <h2>Checkers</h2>
+        </div>
+        <ul class="game-rules">
+            <li>The darker color pieces always move first.</li>
+            <li>Pieces can only move diagonally.</li>
+            <li>A piece can eat another if it can jump over it.</li>
+                <li class="sub-list">To jump over a piece there has to be an opponent's piece next to it, followed by a free space.</li>
+                <li class="sub-list">Multiple jumps in one play are allowed as long as they are consecutive.</li>
+            <li>Men can only move forward.</li>
+                <li class="sub-list">When jumping, the first jump has to be forward, any other consecutive jump can be in any direction.</li>
+                <li class="sub-list">When a man reaches the other side of the board it has to stay there for that play.</li>
+            <li>When a man reaches the other side of the board it becomes a king.</li>
+            <li>Kings can move both forward and backward.</li>
+                <li class="sub-list">Kings can jump in any direction.</li>
+            <li>If one of your pieces can jump, they have to jump.</li>
+            <li>You win when a player has no more pieces or when they can't move their pieces.</li>
+            <li>Players draw when both can't move their pieces.</li>
+        </ul>
+        <div class="buttons are-small settings-actions">
+            <button id="close-rules" class="button is-info settings-buttons">Close</button>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

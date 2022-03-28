@@ -5,6 +5,7 @@ const path = require('path');
 const checkers = require('../build/Debug/checkers');
 const config = require('../checkers-config');
 
+var rulesModal;
 var settingsModal;
 var mainWindow;
 
@@ -141,7 +142,9 @@ const createWindow = () => {
       role: 'help',
       submenu: [
         {
-          label: 'Game Rules'
+          label: 'Game Rules',
+          accelerator: 'CmdOrCtrl+R',
+          click: () => { show_rules(); }
         },
         {
           label: 'Learn More',
@@ -201,7 +204,7 @@ const createSettingsModal = () => {
     frame: false,
     alwaysOnTop: true,
     webPreferences: {
-      //devTools: false,
+      devTools: false,
       preload: path.join(app.getAppPath(), 'src/preload.js'),
       sandbox: true,
       nodeIntegration: false,
@@ -224,6 +227,43 @@ const createSettingsModal = () => {
 
 };
 
+const createRulesModal = () => {
+  rulesModal = new BrowserWindow({
+    parent: mainWindow,
+    modal: true,
+    show: false,
+    width: 600,
+    height: 600,
+    hasShadow: true,
+    minimizable: false,
+    maximizable: false,
+    resizable: true,
+    movable: true,
+    frame: true,
+    closable: true,
+    webPreferences: {
+      //devTools: false,
+      preload: path.join(app.getAppPath(), 'src/preload.js'),
+      sandbox: true,
+      nodeIntegration: false,
+      contextIsolation: true,
+      enableRemoteModule: false
+    }
+  });
+
+  // and load the index html of the modal
+  rulesModal.loadFile(path.join(__dirname, 'rules.html'));
+
+  rulesModal.on('close', () => {
+    rulesModal = null;
+  })
+
+  // show rules modal
+  rulesModal.once('ready-to-show', () => {
+    rulesModal.show();
+  });
+};
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -237,6 +277,12 @@ function show_settings() {
   if (settingsModal == null) {
     createSettingsModal();
   } 
+}
+
+function show_rules() {
+  if (rulesModal == null) {
+    createRulesModal();
+  }
 }
 
 //This section handles all the requests made form renderer

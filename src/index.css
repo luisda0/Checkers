@@ -46,6 +46,7 @@ body {
   margin-bottom: 0;
 }
 
+/*===============================*/
 /*------ Settings Modal ---------*/
 /*===============================*/
 .settings-modal {
@@ -181,4 +182,47 @@ body {
   padding-top: 2px;
   padding-bottom: 2px;
   height: 2.2em;
+}
+
+/*===============================*/
+/*-------- Rules Modal ----------*/
+/*===============================*/
+
+.rules-modal {
+  padding: 1.5vmin;
+  overflow: hidden;
+}
+
+.rules-title {
+  width: 100%;
+  padding: 21px 0;
+  text-align: center;
+  background-image: url('./img/rules-bg.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.rules-title h2 {
+  font-size: 1.5em;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.game-rules {
+  margin: 4vmin 2vmin 2vmin 2vmin;
+  color: #ffffff;
+  font-size: 0.93em;
+  font-weight: 300;
+  height: 370px;
+  overflow: scroll;
+}
+
+.game-rules li {
+  list-style: disc;
+  margin-left: 15px;
+}
+
+.game-rules .sub-list {
+  margin-left: 40px;
+  list-style: circle;
 }
