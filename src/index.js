@@ -2,7 +2,7 @@ const { rejects } = require('assert');
 const { info } = require('console');
 const { dialog, app, BrowserWindow, ipcMain, Menu, shell, webContents } = require('electron');
 const path = require('path');
-const checkers = require('../build/Debug/checkers');
+const checkers = require('../build/Release/checkers');
 const config = require('../checkers-config');
 
 var rulesModal;
@@ -155,7 +155,7 @@ const createWindow = () => {
   Menu.setApplicationMenu(mainMenu);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 };
 
 // Quit when all windows are closed, except on macOS. There, it's common
