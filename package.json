@@ -9,7 +9,8 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\""
+    "lint": "echo \"No linting configured\"",
+    "create-dmg": "electron-installer-dmg ./Releases/Checkers-darwin-arm64/Checkers.app --icon=./src/img/Checkers_icon.icns --title=Checkers"
   },
   "keywords": [],
   "author": {
@@ -19,12 +20,14 @@
   "license": "MIT",
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "icon": "./src/img/Checkers_icon.icns"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "checkers"
+            "name": "Checkers"
           }
         },
         {

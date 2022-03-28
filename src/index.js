@@ -8,6 +8,7 @@ const config = require('../checkers-config');
 var rulesModal;
 var settingsModal;
 var mainWindow;
+var mainWindow_created = false;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -31,6 +32,9 @@ const createWindow = () => {
       enableRemoteModule: false
     }
   });
+
+  mainWindow_created = true;
+
   // start with a mazimized window
   mainWindow.maximize();
 
@@ -63,13 +67,25 @@ const createWindow = () => {
           label: 'New Game',
           accelerator: 'CmdOrCtrl+N',
           click: () => {
-            mainWindow.webContents.send('check_open_settings');
+            if (mainWindow_created == false) {
+              createWindow();
+              createSettingsModal();
+            }
+            else {
+              mainWindow.webContents.send('check_open_settings');
+            }
           }
         },
         {
           label: 'Restart...',
           click: () => {
-            mainWindow.webContents.send('confirm_restart');
+            if (mainWindow_created == false) {
+              createWindow();
+              createSettingsModal();
+            }
+            else {
+              mainWindow.webContents.send('confirm_restart');
+            }
           }
         },
         isMac ? { role: 'close' } : { role: 'quit' }
@@ -82,12 +98,20 @@ const createWindow = () => {
         { 
           label: 'Undo Move',
           accelerator: 'CmdOrCtrl+Z',
-          click: () => { undo(); }
+          click: () => { 
+            if (mainWindow_created == true) {
+              undo();
+            } 
+          }
         },
         { 
           label: 'Redo Move',
           accelerator: 'Shift+CmdOrCtrl+Z',
-          click: () => { redo(); }
+          click: () => { 
+            if (mainWindow_created == true) {
+              redo();
+            } 
+          }
         },
         { type: 'separator' },
         { role: 'cut' },
@@ -154,6 +178,10 @@ const createWindow = () => {
   const mainMenu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(mainMenu);
 
+  mainWindow.on('close', () => {
+    mainWindow_created = false;
+  });
+
   // Open the DevTools.
   //mainWindow.webContents.openDevTools();
 };
@@ -172,6 +200,7 @@ app.on('activate', () => {
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
+    createSettingsModal();
   }
 });
 
