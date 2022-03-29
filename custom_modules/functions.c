@@ -317,12 +317,13 @@ bool hasToEat(int *board, int team) {
 int noPieces(int *board) {
   int team1_count = 0;
   int team2_count = 0;
+  size_t i, j;
 
-  for (size_t i = 1; i < 63; i += 1) {
-    if (board[i] == 1 || board[i] == 3) {
+  for (i = 1, j = 63; i <= j; i ++, j--) {
+    if (board[i] == 1 || board[i] == 3 || board[j] == 1 || board[j] == 3) {
       team1_count += 1;
     }
-    else if (board[i] == 2 || board[i] == 4) {
+    if (board[i] == 2 || board[i] == 4 || board[j] == 2 || board[j] == 4) {
       team2_count += 1;
     }
     if (team1_count > 0 && team2_count > 0) {
