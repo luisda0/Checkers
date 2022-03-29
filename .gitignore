@@ -4,3 +4,4 @@ node_modules/
 bin/
 out/
 Releases/
+package_lock.json

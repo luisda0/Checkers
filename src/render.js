@@ -183,6 +183,9 @@ window.addEventListener("load", event => {
   
 api.receive("go_back", async (result) => {
     try {
+        thinker_active = document.getElementsByClassName('thinker')[0].classList.contains('show-thinker');
+        if (thinker_active) { return }
+        
         let result = await api.step_back();
         await handle_step(result);
         if (game.mode == 'hc') {
@@ -198,6 +201,9 @@ api.receive("go_back", async (result) => {
 
 api.receive("go_forward", async (result) => {
     try {
+        thinker_active = document.getElementsByClassName('thinker')[0].classList.contains('show-thinker');
+        if (thinker_active) { return }
+
         let result = await api.step_forward();
         await handle_step(result);
         if (game.mode == 'hc') {
