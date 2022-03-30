@@ -278,7 +278,8 @@ bool hasToEat(int *board, int team) {
 
   //goes through all the pieces
   for (size_t y = 1; y < 9; y++) {
-    for (size_t x = 1; x < 9; x++) {
+    size_t x = 1 + (y % 2); //starts from a black square
+    for (; x < 9; x++) {
       number = getBoardNumber(x, y, board);
       if(number == team || number == team + 2) {
         if (number != 2) {
@@ -350,7 +351,8 @@ int cantMovePieces(int *board, int player_moving) {
 
   //goes through all the pieces
   for (size_t y = 1; y < 9; y++) {
-    for (size_t x = 1; x < 9; x++) {
+    size_t x = 1 + (y % 2); //starts from a black square
+    for (; x < 9; x += 2) {
       number = getBoardNumber(x, y, board);
 
       //skip empty or invalid places
@@ -547,6 +549,13 @@ int *useMinimax(int *board, int player) {
     child = (*child).next;
   }
 
+  if (num_of_children == 1) {
+    result = (*tmp).board_state;
+    free(tmp);
+    tmp = NULL;
+    return result;
+  }
+
   child = tmp;
   thread = malloc(sizeof(pthread_t) * num_of_children);
   MinimaxArgs *args[num_of_children];
@@ -640,7 +649,8 @@ float evaluatePosition(int *board, int team, int winner) {
     evaluation -= 30000;
   }
   for (size_t y = 1; y < 9; y++) {
-    for (size_t x = 1; x < 9; x++) {
+    size_t x = 1 + (y % 2); //starts from a black square
+    for (; x < 9; x += 2) {
         number = getBoardNumber(x, y, board);
         if (number == 0 || number == 9) {
           continue;
@@ -674,9 +684,11 @@ Node *getChildNodes(int *board, int player) {
   Node *first = NULL;
   int *result;
   int board_number, final[2], initial[2];
+  size_t y1, x1, x, y;
 
-  for (size_t y1 = 1; y1 < 9; y1++) {
-    for (size_t x1 = 1; x1 < 9; x1++) {
+  for (y1 = 1; y1 < 9; y1++) {
+    x1 = 1 + (y1 % 2); //starts from a black square
+    for (; x1 < 9; x1 += 2) {
       //get the piece in this position
       board_number = getBoardNumber(x1, y1, board);
       //if the piece is a player's piece
@@ -684,8 +696,9 @@ Node *getChildNodes(int *board, int player) {
         initial[0] = x1;
         initial[1] = y1;
         //get all the possible places where it could move
-        for (size_t y = 1; y < 9; y++) {
-          for (size_t x = 1; x < 9; x++) {
+        for (y = 1; y < 9; y++) {
+          x = 1 + (y % 2); //starts from a black square
+          for (; x < 9; x += 2) {
             board_number = getBoardNumber(x, y, board);
             if (board_number == 0) {
               final[0] = x;
